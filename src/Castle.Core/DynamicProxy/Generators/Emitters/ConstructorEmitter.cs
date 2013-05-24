@@ -34,13 +34,31 @@ namespace Castle.DynamicProxy.Generators.Emitters
 			this.builder = builder;
 		}
 
-		internal ConstructorEmitter(AbstractTypeEmitter maintype, params ArgumentReference[] arguments)
+		internal ConstructorEmitter(AbstractTypeEmitter maintype, ParameterInfo[] baseConstructorParams, params ArgumentReference[] arguments)
 		{
 			this.maintype = maintype;
 
 			var args = ArgumentsUtil.InitializeAndConvert(arguments);
 
 			builder = maintype.TypeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, args);
+
+			if (baseConstructorParams != null)
+				AddArgumentNames(baseConstructorParams);
+		}
+
+		private void AddArgumentNames(ParameterInfo[] baseConstructorParams)
+		{
+			for (int i = 0; i < baseConstructorParams.Length; i++)
+			{
+				if (!string.IsNullOrEmpty(baseConstructorParams[i].Name))
+				{
+					// Starting from +2 because sequence starts from 1 (so +1)
+					// but the first parameter is proxy interceptors (again +1 so we end up with +2)
+					var paramBuilder = builder.DefineParameter(i + 2, baseConstructorParams[i].Attributes, baseConstructorParams[i].Name);
+					if (!(baseConstructorParams[i].DefaultValue is DBNull))
+						paramBuilder.SetConstant(baseConstructorParams[i].DefaultValue);
+				}
+			}
 		}
 
 		public virtual ConstructorCodeBuilder CodeBuilder

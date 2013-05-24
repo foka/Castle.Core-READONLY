@@ -19,10 +19,11 @@ namespace Castle.DynamicProxy.Generators.Emitters.SimpleAST
 
 	public class ArgumentReference : TypeReference
 	{
-		public ArgumentReference(Type argumentType)
+		public ArgumentReference(Type argumentType, string parameterName = null)
 			: base(argumentType)
 		{
 			Position = -1;
+			Name = parameterName;
 		}
 
 		public ArgumentReference(Type argumentType, int position)
@@ -30,6 +31,11 @@ namespace Castle.DynamicProxy.Generators.Emitters.SimpleAST
 		{
 			Position = position;
 		}
+
+		/// <summary>
+		/// Argument (parameter) name
+		/// </summary>
+		public string Name { get; private set; }
 
 		internal int Position { get; set; }
 

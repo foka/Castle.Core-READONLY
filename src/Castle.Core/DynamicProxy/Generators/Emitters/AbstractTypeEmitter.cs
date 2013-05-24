@@ -105,15 +105,20 @@ namespace Castle.DynamicProxy.Generators.Emitters
 			if (TypeBuilder.IsInterface)
 				throw new InvalidOperationException ("Interfaces cannot have constructors.");
 
-			constructors.Add(new ConstructorEmitter(this));
+			constructors.Add(new ConstructorEmitter(this, null, null));
 		}
 
 		public ConstructorEmitter CreateConstructor(params ArgumentReference[] arguments)
 		{
+			return CreateConstructor(null, arguments);
+		}
+
+		public ConstructorEmitter CreateConstructor(ParameterInfo[] baseConstructorParams, params ArgumentReference[] arguments)
+		{
 			if (TypeBuilder.IsInterface)
 				throw new InvalidOperationException ("Interfaces cannot have constructors.");
 
-			var member = new ConstructorEmitter(this, arguments);
+			var member = new ConstructorEmitter(this, baseConstructorParams, arguments);
 			constructors.Add(member);
 			return member;
 		}

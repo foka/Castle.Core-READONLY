@@ -138,7 +138,7 @@ namespace Castle.DynamicProxy.Generators
 				for (var i = offset; i < offset + baseConstructorParams.Length; i++)
 				{
 					var paramInfo = baseConstructorParams[i - offset];
-					args[i] = new ArgumentReference(paramInfo.ParameterType);
+					args[i] = new ArgumentReference(paramInfo.ParameterType, paramInfo.Name);
 				}
 			}
 			else
@@ -151,7 +151,7 @@ namespace Castle.DynamicProxy.Generators
 				args[i] = new ArgumentReference(fields[i].Reference.FieldType);
 			}
 
-			var constructor = emitter.CreateConstructor(args);
+			var constructor = emitter.CreateConstructor(baseConstructorParams, args);
 			if(baseConstructorParams != null && baseConstructorParams.Length != 0)
 			{
 				var last = baseConstructorParams.Last();
